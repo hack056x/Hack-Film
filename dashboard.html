@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hack Film 2.0 - Películas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0f17;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .carousel-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .carousel-bg-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+            transition: transform 0.1s linear;
+            will-change: transform;
+        }
+
+        .bg-poster {
+            width: calc(20% - 20px);
+            margin: 10px;
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 2/3;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            opacity: 0.7;
+        }
+
+        .bg-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 12px;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        @media (max-width: 650px) {
+            .bg-poster { width: calc(33% - 20px); }
+        }
+        @media (max-width: 480px) {
+            .bg-poster { width: calc(50% - 20px); }
+        }
+
+        .overlay-dark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 23, 0.75);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(15, 23, 30, 0.95) 0%, rgba(8, 12, 18, 0.95) 100%);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00A8E1, #0086b3);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+
+        .sidebar-header .logo-icon i {
+            font-size: 30px;
+            color: white;
+        }
+
+        .sidebar-header h2 {
+            font-size: 20px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 5px;
+        }
+
+        .search-box {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(31, 42, 68, 0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #00A8E1;
+        }
+
+        .categories-section {
+            padding: 10px 0;
+        }
+
+        .section-label {
+            padding: 15px 20px 8px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .category-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .category-btn i {
+            width: 24px;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .category-btn:hover {
+            background: rgba(0,168,225,0.2);
+            padding-left: 25px;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(90deg, #00A8E1, transparent);
+            border-left: 3px solid #00A8E1;
+        }
+
+        .category-count {
+            margin-left: auto;
+            font-size: 11px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .user-info {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 20px;
+        }
+
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #00A8E1, #0086b3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            background: rgba(229, 9, 20, 0.2);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 10px;
+            color: #e50914;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(229, 9, 20, 0.4);
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 2;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            background: rgba(10, 15, 23, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .hero-banner {
+            position: relative;
+            height: 38vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+            margin-bottom: 30px;
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.85)), url('https://image.tmdb.org/t/p/w1280/8b8R8l88Qje9dnbOE6hjt1iBpxP.jpg');
+            border-radius: 0 0 20px 20px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+
+        .hero-content h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #fff, #00A8E1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .btn-play {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #00A8E1;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-play:hover {
+            background: #0086b3;
+            transform: translateY(-2px);
+        }
+
+        .content-section {
+            padding: 0 20px 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header h2 i {
+            color: #00A8E1;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 25px;
+        }
+
+        .movie-card {
+            background: rgba(31, 42, 68, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            border-color: rgba(0,168,225,0.5);
+        }
+
+        .movie-card img {
+            width: 100%;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+        }
+
+        .movie-card-info {
+            padding: 12px;
+        }
+
+        .movie-card-info h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-badge {
+            display: inline-block;
+            font-size: 10px;
+            background: #00A8E1;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .year-badge {
+            display: inline-block;
+            font-size: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 6px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0,168,225,0.3);
+            border-top-color: #00A8E1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
+
+        .no-results i {
+            font-size: 48px;
+            color: #00A8E1;
+            margin-bottom: 15px;
+        }
+
+        .player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .player-modal.active {
+            display: flex;
+        }
+
+        .player-container {
+            flex: 1;
+            background: #000;
+            position: relative;
+        }
+
+        .close-player {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: rgba(0,0,0,0.6);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .player-info {
+            padding: 12px 16px;
+            background: #141414;
+        }
+
+        .player-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .player-meta {
+            display: flex;
+            gap: 16px;
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        #video-player {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        .retry-btn {
+            background: #e50914;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* Loading rápido para el reproductor */
+        .player-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 5;
+        }
+
+        .player-loading .spinner-small {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0,168,225,0.3);
+            border-top-color: #00A8E1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @media (min-width: 768px) {
+            .sidebar { transform: translateX(0); }
+            .main-content { margin-left: 280px; }
+            .menu-toggle { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner { height: 32vh; padding: 20px; }
+            .hero-content h1 { font-size: 1.3rem; }
+            .movies-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1f2a44; }
+        ::-webkit-scrollbar-thumb { background: #00A8E1; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="carousel-background">
+        <div class="carousel-bg-content" id="bgCarousel"></div>
+    </div>
+    <div class="overlay-dark"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon"><i class="fas fa-film"></i></div>
+            <h2>Hack Film 2.0</h2>
+            <p>Tu Cine Online</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar películas..." onkeyup="searchMovies()">
+        </div>
+
+        <div class="categories-section">
+            <div class="section-label"><i class="fas fa-tag"></i> GÉNEROS</div>
+            <div id="categoriesList"></div>
+        </div>
+
+        <div class="user-info">
+            <div class="user-details">
+                <div class="user-avatar"><i class="fas fa-user"></i></div>
+                <div><h4 id="userName">Usuario</h4><p>Plan Premium</p></div>
+            </div>
+            <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <span class="page-title" id="pageTitle">Películas</span>
+            <button class="menu-toggle" style="visibility: hidden;"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h1>Hack Film 2.0</h1>
+                <p>Disfruta de las mejores películas en Full HD</p>
+                <button class="btn-play" onclick="playRandom()"><i class="fas fa-film"></i> Película aleatoria</button>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-film"></i> Catálogo de Películas</h2>
+                <span id="movieCount" style="color:#aaa; font-size:14px;"></span>
+            </div>
+            <div class="movies-grid" id="moviesGrid"></div>
+        </div>
+    </div>
+
+    <div id="player-modal" class="player-modal">
+        <div class="player-container">
+            <button class="close-player" onclick="closePlayer()"><i class="fas fa-times"></i></button>
+            <div id="playerLoading" class="player-loading" style="display: none;">
+                <div class="spinner-small"></div>
+                <p>Cargando video...</p>
+            </div>
+            <video id="video-player" controls preload="auto"></video>
+        </div>
+        <div class="player-info">
+            <div class="player-title" id="player-title">Película</div>
+            <div class="player-meta">
+                <span><i class="fas fa-play-circle" style="color:#00A8E1;"></i> Reproduciendo</span>
+                <span><i class="fas fa-signal"></i> HD</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const M3U_MOVIES_URL = 'https://raw.githubusercontent.com/hacker056x/iptv/refs/heads/main/peliculas';
+        const TMDB_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+        
+        // Cache para almacenar las películas y no recargarlas siempre
+        let moviesCache = null;
+        
+        const defaultMoviesImages = [
+            { img: "d5YmQx9kPLQBHEboGwrAavypztB.jpg", title: "Máquina de guerra" },
+            { img: "l9S8MLUyi2diTc2Gf3KDAOQTuVx.jpg", title: "Peaky Blinders" },
+            { img: "2pULHV2e3W7KNTyyfZl6dX071Np.jpg", title: "Scream 7" },
+            { img: "7lwOTxajURKEWO6gI370NTrVdBO.jpg", title: "Proyecto Salvación" },
+            { img: "kOsqd5jFZ0p3O8Z0k0VQvBW2neW.jpg", title: "Shelter" },
+            { img: "wkmzt08vghSGlLYuqJpx4e2moRX.jpg", title: "Ruta de escape" }
+        ];
+
+        function buildBackgroundCarousel() {
+            const container = document.getElementById('bgCarousel');
+            if (!container) return;
+            let html = '';
+            const allPosters = [...defaultMoviesImages, ...defaultMoviesImages.slice(0, 40)];
+            allPosters.forEach(movie => {
+                const imgUrl = `${TMDB_IMAGE_URL}/${movie.img}`;
+                html += `<div class="bg-poster"><img src="${imgUrl}" alt="${movie.title}" loading="lazy" draggable="false"></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        let bgScrollPos = 0;
+        let bgAnimationId = null;
+        let bgContent = null;
+
+        function startBackgroundScroll() {
+            bgContent = document.getElementById('bgCarousel');
+            if (!bgContent) return;
+            function step() {
+                if (!bgContent) return;
+                bgScrollPos += 0.35;
+                const maxScroll = bgContent.scrollHeight / 2.2;
+                if (bgScrollPos >= maxScroll) bgScrollPos = 0;
+                bgContent.style.transform = `translateY(-${bgScrollPos}px)`;
+                bgAnimationId = requestAnimationFrame(step);
+            }
+            if (bgAnimationId) cancelAnimationFrame(bgAnimationId);
+            bgAnimationId = requestAnimationFrame(step);
+        }
+
+        let allMovies = [];
+        let genres = {};
+        let currentGenre = 'all';
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        function checkAuth() {
+            if (sessionStorage.getItem('loggedIn') !== 'true') {
+                window.location.href = 'index.html';
+            }
+            const userName = sessionStorage.getItem('username') || 'Usuario';
+            document.getElementById('userName').innerHTML = userName;
+        }
+        
+        function showPlayerLoading(show) {
+            const loadingDiv = document.getElementById('playerLoading');
+            const video = document.getElementById('video-player');
+            if (loadingDiv) {
+                loadingDiv.style.display = show ? 'block' : 'none';
+            }
+            if (video) {
+                video.style.opacity = show ? '0.5' : '1';
+            }
+        }
+        
+        function playMovie(url, title) {
+            if (!url) return;
+            
+            const modal = document.getElementById('player-modal');
+            const video = document.getElementById('video-player');
+            const playerTitle = document.getElementById('player-title');
+            
+            playerTitle.textContent = title;
+            
+            // Detener reproducción actual
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+            
+            // Mostrar loading
+            showPlayerLoading(true);
+            
+            // Configurar evento para cuando el video pueda reproducirse
+            const canPlayHandler = () => {
+                showPlayerLoading(false);
+                video.play().catch(e => console.log('Error al reproducir:', e));
+                video.removeEventListener('canplay', canPlayHandler);
+            };
+            
+            video.addEventListener('canplay', canPlayHandler);
+            
+            // Timeout por si tarda mucho
+            const timeoutId = setTimeout(() => {
+                if (showPlayerLoading) {
+                    showPlayerLoading(false);
+                    video.removeEventListener('canplay', canPlayHandler);
+                }
+            }, 10000);
+            
+            // Cargar el video
+            video.src = url;
+            video.load();
+            
+            // Limpiar timeout cuando empiece a cargar
+            video.addEventListener('loadstart', () => {
+                clearTimeout(timeoutId);
+            }, { once: true });
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePlayer() {
+            const modal = document.getElementById('player-modal');
+            const video = document.getElementById('video-player');
+            
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+            showPlayerLoading(false);
+            
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function parseM3UForMovies(content) {
+            const lines = content.split('\n');
+            const movies = [];
+            let currentMovie = null;
+            let count = 0;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line === '') continue;
+                
+                if (line.startsWith('#EXTINF:')) {
+                    const titleMatch = line.match(/,([^,]+)$/);
+                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+                    const groupMatch = line.match(/group-title="([^"]*)"/);
+                    
+                    let title = titleMatch ? titleMatch[1] : 'Película ' + (count + 1);
+                    let logo = logoMatch ? logoMatch[1] : null;
+                    let genre = groupMatch ? groupMatch[1] : 'General';
+                    
+                    title = title.replace(/[^\w\s\u00C0-\u00FF\-\.\(\)]/g, '').trim();
+                    if (!title || title.length === 0) title = 'Película ' + (count + 1);
+                    
+                    let year = null;
+                    const yearMatch = title.match(/\b(19|20)\d{2}\b/);
+                    if (yearMatch) year = yearMatch[0];
+                    
+                    currentMovie = {
+                        id: count,
+                        title: title.substring(0, 80),
+                        genre: genre,
+                        year: year || '2024',
+                        url: '',
+                        poster: logo || `${TMDB_IMAGE_URL}/d5YmQx9kPLQBHEboGwrAavypztB.jpg`
+                    };
+                } else if (!line.startsWith('#') && currentMovie && (line.startsWith('http://') || line.startsWith('https://'))) {
+                    const url = line.split(' ')[0];
+                    if (url && (url.includes('.mp4') || url.includes('.mkv') || url.includes('.avi') || url.includes('.mov'))) {
+                        currentMovie.url = url;
+                        movies.push(currentMovie);
+                        count++;
+                    }
+                    currentMovie = null;
+                }
+            }
+            
+            const uniqueMovies = [];
+            const urlSet = new Set();
+            for (const movie of movies) {
+                if (movie.url && !urlSet.has(movie.url)) {
+                    urlSet.add(movie.url);
+                    uniqueMovies.push(movie);
+                }
+            }
+            
+            return uniqueMovies;
+        }
+        
+        async function loadMovies() {
+            // Si ya tenemos cache, usar cache
+            if (moviesCache) {
+                allMovies = moviesCache;
+                rebuildGenres();
+                renderCategories();
+                renderMovies();
+                updateHeroRandom();
+                return;
+            }
+            
+            const grid = document.getElementById('moviesGrid');
+            grid.innerHTML = `<div class="loading"><div class="spinner"></div><p>Cargando películas...</p></div>`;
+            
+            try {
+                const response = await fetch(M3U_MOVIES_URL);
+                if (!response.ok) throw new Error('Error loading M3U');
+                
+                const text = await response.text();
+                if (text && text.length > 200 && (text.includes('#EXTINF') || text.includes('.mp4'))) {
+                    const parsed = parseM3UForMovies(text);
+                    if (parsed.length > 0) {
+                        allMovies = parsed;
+                        moviesCache = parsed; // Guardar en cache
+                        rebuildGenres();
+                        renderCategories();
+                        renderMovies();
+                        updateHeroRandom();
+                        return;
+                    }
+                }
+                
+                throw new Error('No se encontraron películas');
+            } catch (error) {
+                console.error('Error loading movies:', error);
+                grid.innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i><p>No se pudieron cargar las películas</p><button class="retry-btn" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Reintentar</button></div>`;
+            }
+        }
+        
+        function rebuildGenres() {
+            genres = {};
+            for (const movie of allMovies) {
+                if (!genres[movie.genre]) genres[movie.genre] = [];
+                genres[movie.genre].push(movie);
+            }
+        }
+        
+        function renderCategories() {
+            const container = document.getElementById('categoriesList');
+            if (!container) return;
+            let html = `<button class="category-btn ${currentGenre === 'all' ? 'active' : ''}" onclick="filterByGenre('all')"><i class="fas fa-th-large"></i> Todas <span class="category-count">${allMovies.length}</span></button>`;
+            for (let genre of Object.keys(genres).sort()) {
+                const safeGenre = genre.replace(/'/g, "\\'");
+                html += `<button class="category-btn ${currentGenre === genre ? 'active' : ''}" onclick="filterByGenre('${safeGenre}')"><i class="fas fa-tag"></i> ${genre.length > 20 ? genre.substring(0,20)+'…' : genre}<span class="category-count">${genres[genre].length}</span></button>`;
+            }
+            container.innerHTML = html;
+            document.getElementById('movieCount').innerHTML = `${allMovies.length} películas`;
+        }
+        
+        function filterByGenre(genre) {
+            currentGenre = genre;
+            renderCategories();
+            renderMovies();
+            document.getElementById('pageTitle').innerHTML = genre === 'all' ? 'Películas' : genre;
+            if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        }
+        
+        function searchMovies() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (query.length < 2) { renderMovies(); return; }
+            const filtered = allMovies.filter(m => m.title.toLowerCase().includes(query) || m.genre.toLowerCase().includes(query));
+            renderMovies(filtered);
+            document.getElementById('pageTitle').innerHTML = `🔍 ${filtered.length} resultados`;
+        }
+        
+        function renderMovies(moviesToRender = null) {
+            const container = document.getElementById('moviesGrid');
+            const movies = moviesToRender || (currentGenre === 'all' ? allMovies : genres[currentGenre] || []);
+            
+            if (movies.length === 0) {
+                container.innerHTML = `<div class="no-results"><i class="fas fa-film"></i><p>No hay películas</p></div>`;
+                return;
+            }
+            
+            const defaultPoster = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%231f2a44"/%3E%3Ctext x="50" y="55" text-anchor="middle" fill="%23fff" font-size="14"%3E🎬%3C/text%3E%3C/svg%3E';
+            let html = '';
+            for (let movie of movies) {
+                const safeUrl = movie.url.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+                html += `<div class="movie-card" onclick='playMovie("${safeUrl}", "${movie.title.replace(/"/g, '&quot;')}")'>
+                    <img src="${movie.poster}" loading="lazy" onerror="this.src='${defaultPoster}'">
+                    <div class="movie-card-info">
+                        <h3 title="${movie.title}">${movie.title.length > 35 ? movie.title.substring(0,35)+'…' : movie.title}</h3>
+                        <span class="movie-badge">${movie.genre}</span>
+                        <span class="year-badge">${movie.year}</span>
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+        
+        function updateHeroRandom() {
+            if (allMovies.length > 0) {
+                const random = allMovies[Math.floor(Math.random() * allMovies.length)];
+                const heroBanner = document.querySelector('.hero-banner');
+                if (heroBanner && random.poster) {
+                    heroBanner.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.85)), url(${random.poster})`;
+                }
+            }
+        }
+        
+        function playRandom() {
+            if (allMovies.length > 0) {
+                const random = allMovies[Math.floor(Math.random() * allMovies.length)];
+                playMovie(random.url, random.title);
+            }
+        }
+        
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            buildBackgroundCarousel();
+            startBackgroundScroll();
+            checkAuth();
+            loadMovies();
+        });
+        
+        window.addEventListener('beforeunload', () => {
+            if (bgAnimationId) cancelAnimationFrame(bgAnimationId);
+        });
+        
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('open')) {
+                if (!sidebar.contains(e.target) && !toggle?.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closePlayer();
+        });
+    </script>
+</body>
+</html>
