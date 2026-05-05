@@ -1,0 +1,11 @@
+#EXTM3U
+#EXTINF:-1 tvg-logo="https://image.tmdb.org/t/p/w600_and_h900_face/coJkkPBDeBsYecxoqMnZm8TKlBL.jpg" group-title="Disney Plus", Avatar: Fire and Ash
+https://nvmevod.btv.mx/132T/NANEGOBACK/MOVLAT2025/Ver%204V4T4R3%20mp4.mp4
+#EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/hz7TdCrpLLt2Dz7S3PS2HG9rpAO.jpg" group-title="Paramount Plus", Scream 7
+https://69t.btv.mx/69T/NENA/MOV/LAT2026/Scream%207%202026%20WEB%201080p%20Latino%20mkv.mp4
+#EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/9uakM2woks0JV8HKIc4oatIVS88.jpg" group-title="Paramount Plus", Primate
+https://69t.btv.mx/69T/NANE/MOV/LAT/2026/PrimateLAT2026.mp4
+#EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/r4Tfw8CPeeI4EIHI3wH9qNkycZd.jpg" group-title="Netflix", Intercambiados
+https://69t.btv.mx/69T/NENA/MOV/LAT2026/Intercambiados%202026%20WEB%201080p%20Latino%20mkv.mp4
+#EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/hGgXH6s3klnWW3x2cbQYlrSVg0U.jpg" group-title="Netflix", El yerno
+https://69t.btv.mx/69T/NENA/MOV/LAT2026/yerno1080L4T%20mp4.mp4
