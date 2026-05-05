@@ -9,3 +9,5 @@ https://69t.btv.mx/69T/NANE/MOV/LAT/2026/PrimateLAT2026.mp4
 https://69t.btv.mx/69T/NENA/MOV/LAT2026/Intercambiados%202026%20WEB%201080p%20Latino%20mkv.mp4
 #EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/hGgXH6s3klnWW3x2cbQYlrSVg0U.jpg" group-title="Netflix", El yerno
 https://69t.btv.mx/69T/NENA/MOV/LAT2026/yerno1080L4T%20mp4.mp4
+#EXTINF:-1 tvg-logo="https://image.tmdb.org/t/p/w600_and_h900_face/lm3kQfoyxK1ly4qhGAOyOrCMx6F.jpg" group-title="xxx", Mofos62
+https://nvmevod.btv.mx/132T/NANEGOBACK/MOVXXX/Mofos/Mofos62.mp4
