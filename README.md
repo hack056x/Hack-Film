@@ -50,7 +50,12 @@ tu lista m3u debe tener este formato :
 
 para que funciones
 
+puede entrar aui para verifica su funcion:
 
+https://hack056x.github.io/Hack-Film/
+
+
+by @hacker056
 
 
 
