@@ -2,9 +2,9 @@
 #EXTINF:-1 tvg-logo="https://image.tmdb.org/t/p/w600_and_h900_face/coJkkPBDeBsYecxoqMnZm8TKlBL.jpg" group-title="Disney Plus", Avatar: Fire and Ash
 https://nvmevod.btv.mx/132T/NANEGOBACK/MOVLAT2025/Ver%204V4T4R3%20mp4.mp4
 #EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/pmZiChyJs5Y0tz7sMAiZNNIo9z4.jpg" group-title="Peliculas", Snow White and the Seven Dwarfs
-['https://69t.btv.mx/69T/32T/ENG-MOVIE/PEL/Peliculasa2022/P3L1CUL4S/Snow%20White%20and%20the%20Huntsman%20%282012%29.mp4']
+https://69t.btv.mx/69T/32T/ENG-MOVIE/PEL/Peliculasa2022/P3L1CUL4S/Snow%20White%20and%20the%20Huntsman%20%282012%29.mp4
 #EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/yRDU00odN8kHIFJQobkoCKcL6Le.jpg" group-title="Peliculas", Fantasia
-['https://69t.btv.mx/69T/32T/ENG-MOVIE/PEL/Peliculasa2022/P3L1CUL4S/Fantasia%20%281940%29.mp4']
+https://69t.btv.mx/69T/32T/ENG-MOVIE/PEL/Peliculasa2022/P3L1CUL4S/Fantasia%20%281940%29.mp4
 #EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/wOw0IKC8hxLsPNswkmyxvPe3UiE.jpg" group-title="Peliculas", Pinocchio
 ['https://69t.btv.mx/69T/32T/ENG-MOVIE/PEL/Peliculasa2022/P3L1CUL4S/Pinocchio%20%281940%29.mp4']
 #EXTINF:-1 tvg-logo="http://image.tmdb.org/t/p/w1280/aRVQ1EgTx3vbhK6qls2O834bPQc.jpg" group-title="Peliculas", Dumbo
